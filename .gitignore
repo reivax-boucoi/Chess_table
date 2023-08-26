@@ -28,4 +28,5 @@ fp-info-cache
 *.xml
 *.csv
 
-#Freecad .FCStd1
+#Freecad 
+.FCStd1
