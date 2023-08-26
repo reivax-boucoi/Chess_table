@@ -29,4 +29,4 @@ fp-info-cache
 *.csv
 
 #Freecad 
-.FCStd1
+*.FCStd1
