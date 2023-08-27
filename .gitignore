@@ -30,3 +30,8 @@ fp-info-cache
 
 #Freecad 
 *.FCStd1
+
+#NodeJS
+.DS_Store
+package-lock.json
+node_modules/
