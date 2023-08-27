@@ -1,6 +1,4 @@
-var http = require('http');
-var fs = require('fs');
-var index = fs.readFileSync( 'index.html');
+
 
 var SerialPort = require('serialport');
 const parsers = SerialPort.parsers;
@@ -19,25 +17,50 @@ var port = new SerialPort('/dev/ttyUSB1',{
 
 port.pipe(parser);
 
-var app = http.createServer(function(req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end(index);
-});
+// Using express: http://expressjs.com/
+var express = require('express');
+// Create the app
+var app = express();
 
-var io = require('socket.io').listen(app);
+// Set up the server
+// process.env.PORT is related to deploying on heroku
+var server = app.listen(3000, listen);
 
-io.on('connection', function(socket) {
+// This call back just tells us that the server has started
+function listen() {
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log('Example app listening at http://' + host + ':' + port);
+}
+
+app.use(express.static('public'));
+
+
+// WebSocket Portion
+// WebSockets work with the HTTP server
+var io = require('socket.io')(server);
+
+// Register a callback function to run when we have an individual connection
+// This is run for each individual user that connects
+io.sockets.on('connection',
+  // We are given a websocket object in our function
+  function (socket) {
+  
+    console.log("We have a new client: " + socket.id);
     
-    socket.on('lights',function(data){
+    socket.on('path',function(data){
         
-        console.log( data );
+        console.log("Client receive: " +data );
         port.write( data.status );
     
     });
     parser.on("data", function (data) {
-        console.log("Received data from port: " + data);
+        console.log("GRBL receive: " + data);
         io.emit("data", data);
     });
-});
-
-app.listen(3000);
+    
+    socket.on('disconnect', function() {
+      console.log("Client has disconnected");
+    });
+  }
+);
