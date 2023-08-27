@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+   <head>
+
+      <title>Communicating from Node.js to an Arduino</title>
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js'></script>
+
+   </head>
+   <body>
+
+      <h1>Communicating from Node.js to an Arduino</h1>
+
+      <button id="lightOn">Turn Light On</button>
+      <button id="lightOff">Turn Light Off</button>
+
+      <script>
+
+      var socket = io();
+
+        socket.on('data', function(data) {
+            console.log('test'+data);
+        });
+        
+      document.getElementById('lightOn').onclick = function() {
+        socket.emit('lights', { "status":"M3\n" });
+      };
+
+      document.getElementById('lightOff').onclick = function(){               
+        socket.emit('lights', { "status":"M5\n" });
+      };
+
+      </script>
+
+   </body>
+</html>

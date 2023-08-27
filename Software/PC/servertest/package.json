@@ -1,0 +1,9 @@
+{
+    "name": "test0",
+    "version": "0.0.1",
+    "description": "test0",
+    "dependencies": {
+        "serialport": "^9.2.8",
+        "socket.io": "^2.0.4"
+    }
+}
