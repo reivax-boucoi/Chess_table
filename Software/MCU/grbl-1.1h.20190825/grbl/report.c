@@ -172,15 +172,16 @@ void report_init_message()
   printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
   
   //XB init
-  HE_DDR &= ~(1<<HE_LATCH_BIT);
+  HE_DDR &= ~(1<<HE_DIN_BIT);
+  HE_DDR |= (1<<HE_LATCH_BIT)|(1<<HE_CLK_BIT);
   //latch high
-    HE_DDR |= (1<<HE_LATCH_BIT);
+    HE_PORT|= (1<<HE_LATCH_BIT);
     uint8_t idx=0;
     for (; idx<=63; idx++) {
       //clock high
-    HE_DDR |= (1<<HE_CLK_BIT);
+    HE_PORT|= (1<<HE_CLK_BIT);
       //clock low 
-    HE_DDR &= ~(1<<HE_CLK_BIT);
+     HE_PORT&= ~(1<<HE_CLK_BIT);
     }
   //XB init end
 }
@@ -665,20 +666,25 @@ void report_realtime_status()
   
   //XB start here
   
-  printPgmString(PSTR("|He:"));
-  //latch low 
-    HE_DDR &= ~(1<<HE_LATCH_BIT);
-  //latch high
-    HE_DDR |= (1<<HE_LATCH_BIT);
-  uint8_t data=0;
+    printPgmString(PSTR("|He:"));
+    //latch low 
+    HE_PORT &= ~(1<<HE_LATCH_BIT);
+    __builtin_avr_nop();
+    __builtin_avr_nop();
+    //latch high
+    HE_PORT|= (1<<HE_LATCH_BIT);
+    __builtin_avr_nop();
+    uint8_t data=0;
     for (idx=0; idx<=63; idx++) {
       //clock high
-    HE_DDR |= (1<<HE_CLK_BIT);
-      //clock low 
-    HE_DDR &= ~(1<<HE_CLK_BIT);
+      HE_PORT|= (1<<HE_CLK_BIT);
+      __builtin_avr_nop();
       //read data
-      data=(data<<1)|((HE_PIN>>HE_DIN_BIT)&0x01);
-      if(idx%8==7)serial_write('^'+data);
+      data=(data<<1) | ((HE_PIN>>HE_DIN_BIT)&0x01);
+      //clock low 
+      HE_PORT&= ~(1<<HE_CLK_BIT);
+      //read data
+      if(idx%8==7)serial_write(data);
     }
   
   //XB end here
