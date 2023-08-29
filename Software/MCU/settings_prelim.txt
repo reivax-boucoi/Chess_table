@@ -1,0 +1,52 @@
+//step pulse min time. A4988 min is 1us, default grbl is 10us
+//$0=10
+//stepper unpower after idle time (255=never unpower, 25ms=default)
+//$1=25
+//axis direction invert mask
+$3=0
+Setting Value 	Mask 	Invert X 	Invert Y 	Invert Z
+0 	00000000 	N 	N 	N
+1 	00000001 	Y 	N 	N
+2 	00000010 	N 	Y 	N
+3 	00000011 	Y 	Y 	N
+4 	00000100 	N 	N 	Y
+5 	00000101 	Y 	N 	Y
+6 	00000110 	N 	Y 	Y
+7 	00000111 	Y 	Y 	Y
+//soft limits (0 disabled, 1 enable), (need homing enabled + max axis values set)
+$20
+//hard limits (bool)
+$21
+//homing cycle (bool)
+$22
+//homing dir invert (use table). set to 1 if limit sw are located in neg dir, default=pos
+$23
+//homing feed speed (2nd slow speed)
+$24
+//homing seek speed (1st fast aproach)
+$25
+//homing debounce, ms. typ 5-25ms
+$26
+//homing pull off from corner, in mm
+$27
+//scaling: steps/mm for x,y,z
+steps_per_mm = (steps_per_revolution*microsteps)/mm_per_rev
+$30 max spindle speed (5v)
+$31 min spindle speed (0.02V)
+$100/101/102
+//max speed in mm/min for x,y,z. set to 10/20% of stepper stall rate
+$110,111,112
+//acceleration (mm/min²) for x,y,z
+$120,121,122
+//max travel in mm for x,y,z
+$130,131,132
+
+
+M3 = spindle on
+M5= stop spindle
+S 5=set spindle speed to value 5 (write only once
+Coolant State 	M7, M9
+
+G53=machine coordinates:set to 0 at homing
+G54=use coord system P1 (g55=p2, ...)
+to write P1 offsets: G10 L2 P1 X33 Y22
