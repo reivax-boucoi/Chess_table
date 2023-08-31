@@ -676,6 +676,7 @@ void report_realtime_status()
     __builtin_avr_nop();
     uint8_t data=0;
     for (idx=0; idx<=63; idx++) {
+      //maybe read should be before clock pulse?
       //clock high
       HE_PORT|= (1<<HE_CLK_BIT);
       __builtin_avr_nop();
@@ -684,7 +685,7 @@ void report_realtime_status()
       //clock low 
       HE_PORT&= ~(1<<HE_CLK_BIT);
       //read data
-      if(idx%8==7)serial_write(data);
+      if((idx&0x03)==0x03)serial_write('a'+(data & 0x0F));
     }
   
   //XB end here

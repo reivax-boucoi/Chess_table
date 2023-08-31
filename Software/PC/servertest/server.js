@@ -30,7 +30,7 @@ var server = app.listen(process.env.PORT || 3000, "localhost",listen);
 function listen() {
   var host = server.address().address;
   var port = server.address().port;
-  console.log('Example app listening at http://' + host + ':' + port);
+  console.log('Server started at http://' + host + ':' + port);
 }
 
 app.use(express.static('public'));
@@ -50,13 +50,25 @@ io.sockets.on('connection',
     
     socket.on('path',function(data){
         
-        console.log("Client receive: " +data.status );
-        port.write( data.status );
+        console.log("[Client] " +data);
+        
+        if(data.immediate!=undefined){
+          if(data.immediate=="?\n"){
+            port.write('?');            
+          }else
+            port.write( data.immediate );
+        }
     
     });
+      
     parser.on("data", function (data) {
-        console.log("GRBL receive: " + data);
-        io.emit("data", data);
+        console.log("[GRBL] " + data);
+        if(data!="ok"){
+          if(data[0]=='<'){
+              io.emit("status",parseStatus(data));
+          }else
+          io.emit("data", data);
+        }
     });
     
     socket.on('disconnect', function() {
@@ -64,3 +76,18 @@ io.sockets.on('connection',
     });
   }
 );
+
+function parseStatus(str){
+  
+  let status=str.substring(1,str.indexOf('|'));//`Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep`
+  
+  let coords=str.match(/Pos:([\d.]+),([\d.]+),[\d.]+\|/);
+  coords=[coords[1],coords[2]];
+  
+  let i=str.indexOf("|He:");
+  let piecemap="";
+  if(i!=-1){
+    for(let j=i+4;j<i+4+16;j++)piecemap+=(str[j].charCodeAt()-97).toString(2).padStart(4,'0')
+  }
+  return [status,coords,piecemap];
+}
