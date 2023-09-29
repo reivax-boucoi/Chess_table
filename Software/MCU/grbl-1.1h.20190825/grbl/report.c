@@ -670,7 +670,6 @@ void report_realtime_status()
   
     printPgmString(PSTR("|He:"));
     uint8_t col=0;
-    uint8_t col_sel=(1<<col);
     
     //latch low 
     HE_PORT &= ~(1<<HE_LATCH_BIT);
@@ -684,10 +683,13 @@ void report_realtime_status()
     
     for (idx=0; idx<=16; idx++) {
       if(idx==col+16){
-        
+        //DOUT high
+        HE_PORT&=~(1<<HE_DOUT_BIT);  
       }else{
-        //Dout=0        
+      //DOUT high
+        HE_PORT|= (1<<HE_DOUT_BIT);  
       }
+      __builtin_avr_nop();
       
       //clock high
       HE_PORT|= (1<<HE_CLK_BIT);
