@@ -1,4 +1,4 @@
-
+let machine_coords={x0:-2.5+35/2,y0:-17-35/2,w:-35}//offset y by 35 to account
 
 var SerialPort = require('serialport');
 const parsers = SerialPort.parsers;
@@ -7,7 +7,7 @@ const parser = new parsers.Readline({
     delimiter: '\r\n'
 });
 
-var port = new SerialPort('/dev/ttyUSB1',{ 
+var port = new SerialPort('/dev/rfcomm0',{ 
     baudRate: 115200,
     dataBits: 8,
     parity: 'none',
@@ -50,24 +50,32 @@ io.sockets.on('connection',
     
     socket.on('path',function(data){
         
-        console.log("[Client] " +data);
         
         if(data.immediate!=undefined){
           if(data.immediate=="?\n"){
             port.write('?');            
-          }else
+          }else{
+            console.log("[Client] " +data.immediate);
             port.write( data.immediate );
+          }
+        }else if(data.move!=undefined){
+          let x= (data.move[0]*machine_coords.w + machine_coords.x0).toFixed(2);
+          let y= (data.move[1]*machine_coords.w + machine_coords.y0).toFixed(2);
+        console.log("[Client] " +"Path "+x+"\t"+y);
+            port.write( "X"+ x +" Y"+ y +"\n");
+          
         }
     
     });
       
     parser.on("data", function (data) {
-        console.log("[GRBL] " + data);
         if(data!="ok"){
           if(data[0]=='<'){
               io.emit("status",parseStatus(data));
-          }else
-          io.emit("data", data);
+          }else{
+            console.log("[GRBL] " + data);
+            io.emit("data", data);
+          } 
         }
     });
     
@@ -81,8 +89,9 @@ function parseStatus(str){
   
   let status=str.substring(1,str.indexOf('|'));//`Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep`
   
-  let coords=str.match(/Pos:([\d.]+),([\d.]+),[\d.]+\|/);
-  coords=[coords[1],coords[2]];
+  let coords=str.match(/Pos:([-\d.]+),([-\d.]+),[-\d.]+\|/);
+  coords=[(coords[1]-machine_coords.x0)/machine_coords.w,
+          (coords[2]-machine_coords.y0)/machine_coords.w ];
   
   let i=str.indexOf("|He:");
   let piecemap="";

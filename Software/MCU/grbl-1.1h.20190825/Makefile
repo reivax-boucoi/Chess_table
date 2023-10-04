@@ -28,9 +28,9 @@
 #                is connected.
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
-DEVICE     ?= atmega328
+DEVICE     ?= atmega328p
 CLOCK      = 16000000
-PROGRAMMER ?= -c usbtiny -P usb
+PROGRAMMER ?= -c usbasp -P usb
 SOURCE    = main.c motion_control.c gcode.c spindle_control.c coolant_control.c serial.c \
              protocol.c stepper.c eeprom.c settings.c planner.c nuts_bolts.c limits.c jog.c\
              print.c probe.c report.c system.c
