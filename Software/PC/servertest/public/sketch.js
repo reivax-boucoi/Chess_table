@@ -121,7 +121,7 @@ function inpu_grbl_sender() {
 }
 
 function bot_init() {
-	socket.emit('path', { "immediate":"S1000\r\nG1 F1000\r\n$H\r\n" });
+	socket.emit('path', { "immediate":"$H\r\nS1000\r\nG1 F1000\r\n" });
 	st.html("GRBL status: Homing");
 	poll_it=setInterval(poll,250);
 }
