@@ -169,15 +169,17 @@ void report_feedback_message(uint8_t message_code)
 // Welcome message
 void report_init_message()
 {
-  printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
+  printPgmString(PSTR("\r\nXB's CNC " GRBL_VERSION " ['$' for help]\r\n"));
   
   //XB init
   HE_DDR &= ~(1<<HE_DIN_BIT);
-  HE_DDR |= (1<<HE_LATCH_BIT)|(1<<HE_CLK_BIT);
+  HE_DDR |= (1<<HE_LATCH_BIT)|(1<<HE_CLK_BIT)|(1<<HE_DOUT_BIT);
   //latch high
     HE_PORT|= (1<<HE_LATCH_BIT);
+  //DOUT high
+    HE_PORT|= (1<<HE_DOUT_BIT);
     uint8_t idx=0;
-    for (; idx<=63; idx++) {
+    for (; idx<=15; idx++) {
       //clock high
     HE_PORT|= (1<<HE_CLK_BIT);
       //clock low 
@@ -667,6 +669,9 @@ void report_realtime_status()
   //XB start here
   
     printPgmString(PSTR("|He:"));
+    uint8_t col=0;
+    uint8_t col_sel=(1<<col);
+    
     //latch low 
     HE_PORT &= ~(1<<HE_LATCH_BIT);
     __builtin_avr_nop();
@@ -674,9 +679,16 @@ void report_realtime_status()
     //latch high
     HE_PORT|= (1<<HE_LATCH_BIT);
     __builtin_avr_nop();
+    
     uint8_t data=0;
-    for (idx=0; idx<=63; idx++) {
-      //maybe read should be before clock pulse?
+    
+    for (idx=0; idx<=16; idx++) {
+      if(idx==col+16){
+        
+      }else{
+        //Dout=0        
+      }
+      
       //clock high
       HE_PORT|= (1<<HE_CLK_BIT);
       __builtin_avr_nop();
@@ -684,9 +696,9 @@ void report_realtime_status()
       data=(data<<1) | ((HE_PIN>>HE_DIN_BIT)&0x01);
       //clock low 
       HE_PORT&= ~(1<<HE_CLK_BIT);
-      //read data
       if((idx&0x03)==0x03)serial_write('a'+(data & 0x0F));
     }
+    
   
   //XB end here
   
