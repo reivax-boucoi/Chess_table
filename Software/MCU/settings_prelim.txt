@@ -46,7 +46,7 @@ $100/101/102=64
 $110,111,112=1000
 //acceleration (mm/min²) for x,y,z
 $120,121,122=50
-//max travel in mm for x,y,z
+//max travel in mm for x,y,z, was 365 for X, changing to 370
 $130=365
 $131=315
 $132

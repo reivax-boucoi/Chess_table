@@ -28,6 +28,7 @@
 
 #include "grbl.h"
 
+uint8_t col=0;
 
 // Internal report utilities to reduce flash with repetitive tasks turned into functions.
 void report_util_setting_prefix(uint8_t n) { serial_write('$'); print_uint8_base10(n); serial_write('='); }
@@ -669,8 +670,9 @@ void report_realtime_status()
   //XB start here
   
     printPgmString(PSTR("|He:"));
-    uint8_t col=0;
     
+    col=(col+1)&0x07;
+    serial_write('A'+col);
     //latch low 
     HE_PORT &= ~(1<<HE_LATCH_BIT);
     __builtin_avr_nop();
@@ -681,21 +683,22 @@ void report_realtime_status()
     
     uint8_t data=0;
     
-    for (idx=0; idx<=16; idx++) {
-      if(idx==col+16){
+    for (idx=0; idx<=15; idx++) {
+      if(idx==col+8){
         //DOUT high
         HE_PORT&=~(1<<HE_DOUT_BIT);  
       }else{
       //DOUT high
         HE_PORT|= (1<<HE_DOUT_BIT);  
       }
+      //read data
+      data=(data<<1) | ((HE_PIN>>HE_DIN_BIT)&0x01);
+      
       __builtin_avr_nop();
       
       //clock high
       HE_PORT|= (1<<HE_CLK_BIT);
       __builtin_avr_nop();
-      //read data
-      data=(data<<1) | ((HE_PIN>>HE_DIN_BIT)&0x01);
       //clock low 
       HE_PORT&= ~(1<<HE_CLK_BIT);
       if((idx&0x03)==0x03)serial_write('a'+(data & 0x0F));

@@ -34,8 +34,8 @@
   #define HE_DDR        DDRC
   #define HE_PIN        PINC
   #define HE_PORT       PORTC
-  #define HE_DOUT_BIT    1
-  #define HE_DIN_BIT    2
+  #define HE_DOUT_BIT    2
+  #define HE_DIN_BIT    1
   #define HE_CLK_BIT    5
   #define HE_LATCH_BIT  4
   
