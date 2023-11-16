@@ -1,0 +1,3 @@
+{
+    "files": ["form.ui","Mover.py","CNC_interface.py","game_logic.py","Board.py","mainwindow.py","utils.py"]
+}
