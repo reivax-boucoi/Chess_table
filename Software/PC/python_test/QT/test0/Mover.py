@@ -6,12 +6,16 @@ class Mover:
     isMoving=False
     path=[]
     brd=None
-    dragCompensation=0
+    dragCompensation=0.15
+    lastMove=[]
+    lastMoveUCI=None
+    selectedPiece=[None, None]
 
     def __init__(self, brd):
         self.brd=brd
 
     def addMove(self, s,d):
+        self.lastMove=[s,d]
         if not isinstance(s,utils.Coords):
             s=utils.Coords(s)
         if not isinstance(d,utils.Coords):
@@ -45,7 +49,7 @@ class Mover:
         self.path.append(comp)
         self.path.append("OFF")
         self.isMoving=True
-        self.printPath()
+        #self.printPath()
 
     def getStorageLoc(self):
         if self.brd.storageIndex<8:
@@ -55,7 +59,9 @@ class Mover:
         return utils.Coords(x, self.brd.storageIndex%8)
 
     def addCapture(self, s,d):
-        self.addStorageMove(d,self.getStorageLoc())
+        self.lastMove=[s,d]
+        d_c=utils.Coords(d)
+        self.addStorageMove(d_c,self.getStorageLoc())
         self.brd.storageIndex+=1
         if self.brd.storageIndex>15:
             raise OverflowError("Capture buffer is full")

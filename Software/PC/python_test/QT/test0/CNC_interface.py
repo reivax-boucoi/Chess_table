@@ -81,10 +81,9 @@ class CNC_interface:
             self.awaitingResponse=False
 
     def sendAsync(self,m):
-        if(self.status is not CNC_state.HOMED):
+        if(self.status is CNC_state.DISCONNECTED):
             print("poll whilst not init")
             return 0
-
 
         if self.cnc.in_waiting>0:
             response=self.cnc.readline()

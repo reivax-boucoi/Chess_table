@@ -2,7 +2,11 @@
 import sys
 
 from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtSvgWidgets import QSvgWidget
+from PySide6.QtGui import QMouseEvent
 from PySide6.QtCore import QTimer
+from PySide6.QtCore import Qt
+#from PySide6.QtCore.Qt import MouseButton
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -20,19 +24,28 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.timer = QTimer(self)
         self.timer.timeout.connect( self.periodicTimer)
-        self.timer.start(1000)
+        self.timer.start(250)
+        self.svgWidget = QSvgWidget(self.ui.horizontalLayoutWidget)
+        self.svgWidget.setMinimumHeight(500)
+        self.svgWidget.setMinimumWidth(500)
+        self.svgWidget.setVisible(True)
+        self.svgWidget.mouseReleaseEvent=self.svgWidget_clicked
         #widgetSvg = QSvgWidget(parent=self.ui.mySVGWidget)
+
+    def svgWidget_clicked(self,event):
+        clickPt=event.globalPosition()-self.pos()
+        gm.svgClicked(clickPt.x(),clickPt.y())
+        gm.setBoardSVG()
+        event.accept()
 
     def SMNext_buttonPressed(self):
         #gm.cnc.CNC_initialize()
-        self.ui.SMState_label.setText(gm.gameStatus.name)
-        self.repaint()
+        pass
 
     def PlayerGo_buttonPressed(self):
         gm.cnc.CNC_getHall()
         gm.cnc.printBoard(gm.cnc.hall_effect_brd)
         print("Board piece count:",gm.cnc.hall_effect_brd.getPieceCount())
-        gm.mover.addMove(63,62)
 
     def CNCcon_buttonPressed(self):
         if gm.cnc.status is CNC_state.DISCONNECTED:
@@ -50,12 +63,15 @@ class MainWindow(QMainWindow):
             self.ui.CNCcon_button.setText("Reconnect")
 
     def periodicTimer(self):
-        gm.cnc.sendAsync(gm.mover)
+        gm.periodicUpdate()
+        self.ui.SMState_label.setText(gm.gameStatus.name)
+        self.repaint()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     gm=game_logic.GameManager()
     widget = MainWindow()
-#    widgetSvg.setGeometry(0, 0, 600, 600)
+    gm.svgWidget=widget.svgWidget
+    gm.setBoardSVG()
     widget.show()
     sys.exit(app.exec())

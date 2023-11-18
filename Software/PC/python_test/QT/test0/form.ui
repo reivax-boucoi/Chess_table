@@ -21,64 +21,18 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>771</width>
-      <height>551</height>
+      <width>781</width>
+      <height>502</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QPushButton" name="SMNext_button">
-       <property name="text">
-        <string>SM Next</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="SMState_label">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>SM State</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="PlayerGo_button">
-       <property name="text">
-        <string>PlayerGo</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLabel" name="HEstate_label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Hall effect state</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" rowspan="2">
-      <widget class="QWidget" name="mySVGWidget" native="true">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QWidget" name="svgWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>500</width>
@@ -87,12 +41,68 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="CNCcon_button">
-       <property name="text">
-        <string>CNC connect</string>
-       </property>
-      </widget>
+     <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="SMNext_button">
+         <property name="text">
+          <string>SM Next</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="SMState_label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>SM State</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="HEstate_label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Hall effect state</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="PlayerGo_button">
+         <property name="text">
+          <string>PlayerGo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="CNCcon_button">
+         <property name="text">
+          <string>CNC connect</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -108,8 +118,8 @@
    <slot>SMNext_buttonPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>685</x>
-     <y>222</y>
+     <x>624</x>
+     <y>259</y>
     </hint>
     <hint type="destinationlabel">
      <x>409</x>
@@ -124,8 +134,8 @@
    <slot>PlayerGo_buttonPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>685</x>
-     <y>479</y>
+     <x>624</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
      <x>706</x>
@@ -140,8 +150,8 @@
    <slot>CNCcon_buttonPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>614</x>
-     <y>28</y>
+     <x>624</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
